@@ -1,3 +1,9 @@
+# IF Estágio
+
+This app was created to help on filling and validation of internship forms on IFCE. This first version will include features uniquely for the IFCE technical students. 
+
+# Programming notes
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
