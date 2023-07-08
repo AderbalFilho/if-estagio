@@ -7,23 +7,22 @@ import '@fontsource/roboto/700.css';
 
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'IF Estágio',
-  description: 'Plataforma para auxiliar na validação e preenchimento do formulário de estágio',
-}
+  description:
+    'Plataforma para auxiliar na validação e preenchimento do formulário de estágio',
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
-  )
+  );
 }

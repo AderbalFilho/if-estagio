@@ -1,28 +1,31 @@
+import { IActivities } from '@/interfaces/activities.model';
+import { IUser } from '@/interfaces/user.model';
 import { ReactNode, createContext, useState } from 'react';
 
 const defaultUser: IUser = {
-  name: null,
-  course: null,
-  semester: null,
-  class: null,
-  company: null,
+  name: '',
+  course: '',
+  semester: '',
+  class: '',
+  company: '',
   internshipBegin: null,
   internshipEnd: null,
-  workload: null,
-  internshipArea: null,
-  teacherAdvisor: null,
-  internshipSupervisor: null,
+  workload: 0,
+  internshipArea: '',
+  teacherAdvisor: '',
+  internshipSupervisor: '',
 };
 
 export const MainContext = createContext({
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   updateUser: (user: IUser) => {},
   user: { ...defaultUser },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   updateActivities: (activities: IActivities[]) => {},
-  activities: [] as IActivities[]
+  activities: [] as IActivities[],
 });
 
-
-export function MainContextProvider({children}: { children: ReactNode }) {
+export function MainContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState({ ...defaultUser });
   const [activities, setActivities] = useState([] as IActivities[]);
 
@@ -37,12 +40,14 @@ export function MainContextProvider({children}: { children: ReactNode }) {
   }
 
   return (
-    <MainContext.Provider value={{
-      user,
-      updateUser,
-      activities,
-      updateActivities
-    }}>
+    <MainContext.Provider
+      value={{
+        user,
+        updateUser,
+        activities,
+        updateActivities,
+      }}
+    >
       {children}
     </MainContext.Provider>
   );

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import TheHeader from '@/components/TheHeader';
 import UserInfo from '@/components/UserInfo';
@@ -22,5 +22,5 @@ export default function Home() {
         </DatepickerLocalizationProvider>
       </MainContextProvider>
     </main>
-  )
+  );
 }

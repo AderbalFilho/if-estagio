@@ -1,13 +1,13 @@
-interface IUser {
-  name: string | null;
-  course: string | null;
-  semester: string | null;
-  class: string | null;
-  company: string | null;
+export interface IUser {
+  name: string;
+  course: string;
+  semester: string;
+  class: string;
+  company: string;
   internshipBegin: Date | null;
   internshipEnd: Date | null;
-  workload: number | null;
-  internshipArea: string | null;
-  teacherAdvisor: string | null;
-  internshipSupervisor: string | null;
-};
+  workload: number;
+  internshipArea: string;
+  teacherAdvisor: string;
+  internshipSupervisor: string;
+}
