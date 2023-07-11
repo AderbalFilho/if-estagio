@@ -6,7 +6,7 @@ export interface IUser {
   company: string;
   internshipBegin: Date | null;
   internshipEnd: Date | null;
-  workload: number;
+  workload: string;
   internshipArea: string;
   teacherAdvisor: string;
   internshipSupervisor: string;

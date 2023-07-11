@@ -25,6 +25,17 @@ const UserInfo = () => {
     updateUser({ ...user, [id]: newValue });
   }
 
+  function changeUserFromNumber(e: React.ChangeEvent<HTMLInputElement>) {
+    let { value }: { value: string | number } = e.target;
+    value = parseInt(value);
+
+    if (isNaN(value) || value < 0) {
+      e.target.value = '0';
+    }
+
+    changeUser(e);
+  }
+
   return (
     /* TODO: paste styles to an actual styled components file */
     <Accordion
@@ -122,19 +133,17 @@ const UserInfo = () => {
             }
             label="Fim do estágio"
           />
-          {/* TODO: change onChange, if string or less than 0, change to 0 */}
           <TextField
             fullWidth
             required
-            error={user.workload === 0 || user.workload < 0}
+            error={user.workload === '0'}
             id="workload"
             type="number"
             label="Carga horária"
             value={user.workload}
-            onChange={changeUser}
+            onChange={changeUserFromNumber}
             helperText={
-              (user.workload === 0 || user.workload < 0) &&
-              'Escreva uma quantidade válida.'
+              user.workload === '0' && 'Escreva uma quantidade válida.'
             }
             InputProps={{
               endAdornment: (

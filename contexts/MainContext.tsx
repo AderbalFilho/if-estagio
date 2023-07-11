@@ -10,7 +10,7 @@ const defaultUser: IUser = {
   company: '',
   internshipBegin: null,
   internshipEnd: null,
-  workload: 0,
+  workload: '0',
   internshipArea: '',
   teacherAdvisor: '',
   internshipSupervisor: '',
