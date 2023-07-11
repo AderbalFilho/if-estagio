@@ -1,10 +1,14 @@
 import { Typography } from '@mui/material';
 
+import * as S from './styles';
+
 const TheHeader = () => {
   return (
-    <Typography variant="h1" component="h1">
-      IF Estágio
-    </Typography>
+    <S.Header>
+      <Typography variant="h2" component="h1">
+        IF Estágio
+      </Typography>
+    </S.Header>
   );
 };
 

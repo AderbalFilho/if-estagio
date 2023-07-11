@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import {
   Accordion,
-  AccordionDetails,
   AccordionSummary,
   InputAdornment,
   TextField,
@@ -11,6 +10,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DatePicker } from '@mui/x-date-pickers';
 
 import { MainContext } from '@/contexts/MainContext';
+import * as S from './styles';
 
 const UserInfo = () => {
   const { user, updateUser } = useContext(MainContext);
@@ -37,11 +37,7 @@ const UserInfo = () => {
   }
 
   return (
-    /* TODO: paste styles to an actual styled components file */
-    <Accordion
-      TransitionProps={{ unmountOnExit: true }}
-      style={{ margin: '12px 0' }}
-    >
+    <Accordion TransitionProps={{ unmountOnExit: true }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="user-info-content"
@@ -49,7 +45,7 @@ const UserInfo = () => {
       >
         <Typography>Informações do estagiário</Typography>
       </AccordionSummary>
-      <AccordionDetails style={{ display: 'grid', rowGap: '16px' }}>
+      <S.UserAccordion>
         <TextField
           fullWidth
           required
@@ -60,13 +56,7 @@ const UserInfo = () => {
           onChange={changeUser}
           helperText={!user.name.trim() && 'Essa informação é obrigatória.'}
         />
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '2fr repeat(2, 1fr)',
-            columnGap: '10px',
-          }}
-        >
+        <S.UniversityInfo>
           <TextField
             fullWidth
             required
@@ -99,7 +89,7 @@ const UserInfo = () => {
             onChange={changeUser}
             helperText={!user.class.trim() && 'Essa informação é obrigatória.'}
           />
-        </div>
+        </S.UniversityInfo>
         <TextField
           fullWidth
           required
@@ -110,13 +100,7 @@ const UserInfo = () => {
           onChange={changeUser}
           helperText={!user.company.trim() && 'Essa informação é obrigatória.'}
         />
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            columnGap: '10px',
-          }}
-        >
+        <S.InternshipInfo>
           <DatePicker
             value={user.internshipBegin}
             onChange={(newValue: Date | null) =>
@@ -151,7 +135,7 @@ const UserInfo = () => {
               ),
             }}
           />
-        </div>
+        </S.InternshipInfo>
         <TextField
           fullWidth
           error={!user.internshipArea.trim()}
@@ -189,7 +173,7 @@ const UserInfo = () => {
             'Essa informação é obrigatória.'
           }
         />
-      </AccordionDetails>
+      </S.UserAccordion>
     </Accordion>
   );
 };
