@@ -31,7 +31,7 @@ const DailyActivityForm = ({
   activity,
   index,
 }: {
-  handleClose: () => void;
+  handleClose: (e: object, reason: string) => void;
   activity?: IActivity;
   index?: number;
 }) => {
@@ -47,7 +47,7 @@ const DailyActivityForm = ({
     }
   }, []);
 
-  function handleSave() {
+  function handleSave(e: object) {
     /* TODO: Validate the data */
     /* TODO: Create the array first, sort by date and them save */
     if (index) {
@@ -56,11 +56,11 @@ const DailyActivityForm = ({
         ...activities.slice(index + 1, activities.length),
         newActivity as IActivity,
       ]);
+      handleClose(e, 'edit');
     } else {
       updateActivities([...activities, newActivity as IActivity]);
+      handleClose(e, 'add');
     }
-
-    handleClose();
   }
 
   return (
@@ -149,7 +149,7 @@ const DailyActivityForm = ({
         </S.ActivityFormContainer>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={(e) => handleClose(e, 'cancel')}>Cancel</Button>
         <Button onClick={handleSave}>Save</Button>
       </DialogActions>
     </>

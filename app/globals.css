@@ -61,6 +61,16 @@
   --space-lg-fixed: calc(2 * var(--space-unit-fixed));
   --space-xl-fixed: calc(3.25 * var(--space-unit-fixed));
   --space-xxl-fixed: calc(5.25 * var(--space-unit-fixed));
+
+  /* -------------------------------- 
+  Breakpoints
+  -------------------------------- */
+  --screen-xxs: 320px;
+  --screen-xs: 375px;
+  --screen-sm: 425px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1440px;
 }
 
 @media (prefers-color-scheme: dark) {

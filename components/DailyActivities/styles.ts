@@ -5,8 +5,12 @@ export const ActivitiesContainer = styled.div`
 `;
 
 export const AddActivity = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr minmax(35px, auto);
   margin-top: var(--space-sm);
+  column-gap: var(--space-sm);
+`;
+
+export const AddIconContainer = styled.span`
+  font-size: 52px;
 `;

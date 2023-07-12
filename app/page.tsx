@@ -11,11 +11,11 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import styles from './page.module.css';
+import * as S from './styles';
 
 export default function Home() {
   return (
-    <main className={styles.main}>
+    <S.Main>
       <MainContextProvider>
         <DatepickerLocalizationProvider>
           <TheHeader />
@@ -23,6 +23,6 @@ export default function Home() {
           <DailyActivities />
         </DatepickerLocalizationProvider>
       </MainContextProvider>
-    </main>
+    </S.Main>
   );
 }

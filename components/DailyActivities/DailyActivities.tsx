@@ -22,11 +22,18 @@ const DailyActivities = () => {
   const { activities } = useContext(MainContext);
   const [editActivity, setEditActivity] = useState();
   const [open, setOpen] = useState(false);
-  const toggleOpening = () => setOpen(!open);
 
-  function handleCloseDialog() {
+  function toggleOpening(_: object, reason: string) {
+    if (reason === 'backdropClick') {
+      return;
+    }
+
+    setOpen(!open);
+  }
+
+  function handleCloseDialog(e: object, reason: string) {
     setEditActivity(undefined);
-    toggleOpening();
+    toggleOpening(e, reason);
   }
 
   return (
@@ -40,7 +47,12 @@ const DailyActivities = () => {
             Adicione atividades clicando no botão ao lado ou edite atividades
             existentes clicando nas mesmas.
           </Typography>
-          <AddCircleOutlineIcon onClick={toggleOpening} fontSize="large" />
+          <S.AddIconContainer>
+            <AddCircleOutlineIcon
+              onClick={(e) => toggleOpening(e, 'open')}
+              fontSize="inherit"
+            />
+          </S.AddIconContainer>
         </S.AddActivity>
       </S.ActivitiesContainer>
       {activities.map((activity, index) => (
