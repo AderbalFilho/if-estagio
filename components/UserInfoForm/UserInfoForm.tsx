@@ -10,9 +10,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DatePicker } from '@mui/x-date-pickers';
 
 import { MainContext } from '@/contexts/MainContext';
+
 import * as S from './styles';
 
-const UserInfo = () => {
+const UserInfoForm = () => {
   const { user, updateUser } = useContext(MainContext);
 
   function changeUser(e: React.ChangeEvent<HTMLInputElement>) {
@@ -129,6 +130,9 @@ const UserInfo = () => {
             helperText={
               user.workload === '0' && 'Escreva uma quantidade válida.'
             }
+            InputLabelProps={{
+              shrink: true,
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">horas</InputAdornment>
@@ -178,4 +182,4 @@ const UserInfo = () => {
   );
 };
 
-export default UserInfo;
+export default UserInfoForm;

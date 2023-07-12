@@ -1,7 +1,8 @@
 'use client';
 
 import TheHeader from '@/components/TheHeader';
-import UserInfo from '@/components/UserInfo';
+import UserInfoForm from '@/components/UserInfoForm';
+import DailyActivities from '@/components/DailyActivities';
 import DatepickerLocalizationProvider from '@/shared/DatepickerLocalizationProvider';
 import { MainContextProvider } from '@/contexts/MainContext';
 
@@ -18,7 +19,8 @@ export default function Home() {
       <MainContextProvider>
         <DatepickerLocalizationProvider>
           <TheHeader />
-          <UserInfo />
+          <UserInfoForm />
+          <DailyActivities />
         </DatepickerLocalizationProvider>
       </MainContextProvider>
     </main>

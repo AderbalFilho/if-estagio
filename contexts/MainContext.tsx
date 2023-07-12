@@ -1,4 +1,4 @@
-import { IActivities } from '@/interfaces/activities.model';
+import { IActivity } from '@/interfaces/activities.model';
 import { IUser } from '@/interfaces/user.model';
 import { ReactNode, createContext, useState } from 'react';
 
@@ -21,20 +21,20 @@ export const MainContext = createContext({
   updateUser: (user: IUser) => {},
   user: { ...defaultUser },
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  updateActivities: (activities: IActivities[]) => {},
-  activities: [] as IActivities[],
+  updateActivities: (activities: IActivity[]) => {},
+  activities: [] as IActivity[],
 });
 
 export function MainContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState({ ...defaultUser });
-  const [activities, setActivities] = useState([] as IActivities[]);
+  const [activities, setActivities] = useState([] as IActivity[]);
 
   function updateUser(user: IUser) {
     // TODO: Save on localStorage { user, activities }
     setUser(user);
   }
 
-  function updateActivities(activities: IActivities[]) {
+  function updateActivities(activities: IActivity[]) {
     // TODO: Save on localStorage { user, activities }
     setActivities(activities);
   }
