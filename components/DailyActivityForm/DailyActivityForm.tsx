@@ -47,10 +47,21 @@ const DailyActivityForm = ({
     }
   }, []);
 
+  function handleDelete(e: object) {
+    /* TODO: Confirm deletion */
+    if (index || index === 0) {
+      updateActivities([
+        ...activities.slice(0, index),
+        ...activities.slice(index + 1, activities.length),
+      ]);
+      handleClose(e, 'delete');
+    }
+  }
+
   function handleSave(e: object) {
     /* TODO: Validate the data */
     /* TODO: Create the array first, sort by date and them save */
-    if (index) {
+    if (index || index === 0) {
       updateActivities([
         ...activities.slice(0, index),
         ...activities.slice(index + 1, activities.length),
@@ -58,6 +69,8 @@ const DailyActivityForm = ({
       ]);
       handleClose(e, 'edit');
     } else {
+      console.log(newActivity);
+      console.log('date:', newActivity.date?.date());
       updateActivities([...activities, newActivity as IActivity]);
       handleClose(e, 'add');
     }
@@ -65,6 +78,7 @@ const DailyActivityForm = ({
 
   return (
     <>
+      {/* TODO: Put validations on inputs */}
       <DialogTitle>
         {isEditing ? 'Edite' : 'Adicione'} sua atividade
       </DialogTitle>
@@ -72,7 +86,7 @@ const DailyActivityForm = ({
         <S.ActivityFormContainer component="form">
           <DatePicker
             value={newActivity.date || null}
-            onChange={(newValue: Date | null) =>
+            onChange={(newValue: Dayjs | null) =>
               setNewActivity({ ...newActivity, date: newValue })
             }
             label="Data da atividade"
@@ -149,8 +163,9 @@ const DailyActivityForm = ({
         </S.ActivityFormContainer>
       </DialogContent>
       <DialogActions>
-        <Button onClick={(e) => handleClose(e, 'cancel')}>Cancel</Button>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={(e) => handleClose(e, 'cancel')}>Cancelar</Button>
+        {activity && <Button onClick={handleDelete}>Apagar</Button>}
+        <Button onClick={handleSave}>Salvar</Button>
       </DialogActions>
     </>
   );

@@ -8,6 +8,7 @@ import DailyActivityForm from '@/components/DailyActivityForm';
 import { MainContext } from '@/contexts/MainContext';
 
 import * as S from './styles';
+import { IActivity } from '@/interfaces/activities.model';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
@@ -20,7 +21,10 @@ const Transition = forwardRef(function Transition(
 
 const DailyActivities = () => {
   const { activities } = useContext(MainContext);
-  const [editActivity, setEditActivity] = useState();
+  const [editActivity, setEditActivity] = useState<{
+    activity: IActivity;
+    index: number;
+  } | null>(null);
   const [open, setOpen] = useState(false);
 
   function toggleOpening(_: object, reason: string) {
@@ -32,8 +36,22 @@ const DailyActivities = () => {
   }
 
   function handleCloseDialog(e: object, reason: string) {
-    setEditActivity(undefined);
+    setEditActivity(null);
     toggleOpening(e, reason);
+  }
+
+  function handleEdit({
+    activity,
+    index,
+  }: {
+    activity: IActivity;
+    index: number;
+  }) {
+    setEditActivity({
+      activity,
+      index,
+    });
+    toggleOpening({} as object, 'edit');
   }
 
   return (
@@ -55,14 +73,16 @@ const DailyActivities = () => {
           </S.AddIconContainer>
         </S.AddActivity>
       </S.ActivitiesContainer>
-      {activities.map((activity, index) => (
-        <DailyActivity
-          key={`activity-${index}`}
-          activity={activity}
-          index={index}
-          handleEdit={setEditActivity}
-        />
-      ))}
+      <S.ActivitiesCardsContainer>
+        {activities.map((activity, index) => (
+          <DailyActivity
+            key={`activity-${index}`}
+            activity={activity}
+            index={index}
+            handleEdit={handleEdit}
+          />
+        ))}
+      </S.ActivitiesCardsContainer>
 
       <Dialog
         fullWidth
@@ -71,8 +91,8 @@ const DailyActivities = () => {
         TransitionComponent={Transition}
       >
         <DailyActivityForm
-          activity={editActivity}
-          index={undefined}
+          activity={editActivity?.activity}
+          index={editActivity?.index}
           handleClose={handleCloseDialog}
         />
       </Dialog>
