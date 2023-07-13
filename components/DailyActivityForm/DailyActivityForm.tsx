@@ -69,8 +69,6 @@ const DailyActivityForm = ({
       ]);
       handleClose(e, 'edit');
     } else {
-      console.log(newActivity);
-      console.log('date:', newActivity.date?.date());
       updateActivities([...activities, newActivity as IActivity]);
       handleClose(e, 'add');
     }
