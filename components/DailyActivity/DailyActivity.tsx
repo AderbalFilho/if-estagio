@@ -1,10 +1,4 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-} from '@mui/material';
+import { Button, CardActions, CardContent } from '@mui/material';
 
 import { IActivity } from '@/interfaces/activities.model';
 import { configDate, configHour } from '@/shared/config-date';
@@ -27,28 +21,21 @@ const DailyActivity = ({
   }) => void;
 }) => {
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <S.ActivityCard>
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        <S.ActivityDate color="text.secondary" gutterBottom>
           Data: {configDate(activity?.date)}
-        </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        </S.ActivityDate>
+        <S.ActivityHour color="text.secondary">
           {configHour(activity?.hourBegin1)} às {configHour(activity?.hourEnd1)}{' '}
           e de {configHour(activity?.hourBegin2)} às{' '}
           {configHour(activity?.hourEnd2)}
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
+        </S.ActivityHour>
+        <S.ActivityDescription variant="body2">
           Atividade:
           <br />
           {activity?.description}
-        </Typography>
+        </S.ActivityDescription>
       </CardContent>
       <CardActions>
         <Button
@@ -58,7 +45,7 @@ const DailyActivity = ({
           Editar
         </Button>
       </CardActions>
-    </Card>
+    </S.ActivityCard>
   );
 };
 

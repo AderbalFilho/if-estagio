@@ -1,3 +1,4 @@
+import { screenDevice } from '@/shared/device';
 import styled from 'styled-components';
 
 export const ActivitiesContainer = styled.div`
@@ -18,6 +19,18 @@ export const AddIconContainer = styled.span`
 export const ActivitiesCardsContainer = styled.div`
   display: grid;
   gap: var(--space-sm);
-  grid-template-columns: repeat(3, minmax(275px, auto));
+  grid-template-columns: 1fr;
   margin-top: var(--space-lg);
+
+  @media ${screenDevice.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media ${screenDevice.laptop} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media ${screenDevice.desktop} {
+    grid-template-columns: repeat(4, 1fr);
+  }
 `;
