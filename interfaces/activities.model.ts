@@ -8,3 +8,12 @@ export interface IActivity {
   hourEnd2?: Dayjs | null;
   description: string;
 }
+
+export interface IActivityLocalStorage {
+  date: string | null;
+  hourBegin1: string | null;
+  hourEnd1: string | null;
+  hourBegin2?: string | null;
+  hourEnd2?: string | null;
+  description: string;
+}

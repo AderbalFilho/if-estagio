@@ -1,11 +1,13 @@
+import { Dayjs } from 'dayjs';
+
 export interface IUser {
   name: string;
   course: string;
   semester: string;
   class: string;
   company: string;
-  internshipBegin: Date | null;
-  internshipEnd: Date | null;
+  internshipBegin: Dayjs | null;
+  internshipEnd: Dayjs | null;
   workload: string;
   internshipArea: string;
   teacherAdvisor: string;

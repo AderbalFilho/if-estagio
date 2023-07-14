@@ -11,6 +11,7 @@ export const ActivityDate = styled(Typography)`
 
 export const ActivityHour = styled(Typography)`
   margin-bottom: var(--space-md);
+  height: 48px;
 `;
 
 export const ActivityDescription = styled(Typography)`

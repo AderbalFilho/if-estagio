@@ -28,8 +28,11 @@ const DailyActivity = ({
         </S.ActivityDate>
         <S.ActivityHour color="text.secondary">
           {configHour(activity?.hourBegin1)} às {configHour(activity?.hourEnd1)}{' '}
-          e de {configHour(activity?.hourBegin2)} às{' '}
-          {configHour(activity?.hourEnd2)}
+          {activity?.hourBegin2 &&
+            activity?.hourEnd2 &&
+            `e de ${configHour(activity?.hourBegin2)} às ${configHour(
+              activity?.hourEnd2
+            )}`}
         </S.ActivityHour>
         <S.ActivityDescription variant="body2">
           Atividade:
