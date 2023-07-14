@@ -60,16 +60,35 @@ const DailyActivityForm = ({
 
   function handleSave(e: object) {
     /* TODO: Validate the data */
-    /* TODO: Create the array first, sort by date and them save */
     if (index || index === 0) {
-      updateActivities([
+      const activitiesArray = [
         ...activities.slice(0, index),
         ...activities.slice(index + 1, activities.length),
         newActivity as IActivity,
-      ]);
+      ];
+
+      activitiesArray.sort((a, b) =>
+        a.date
+          ? a.date.isAfter(dayjs(b.date ? b.date : '3023-07-12T00:00'))
+            ? -1
+            : 1
+          : 1
+      );
+
+      updateActivities(activitiesArray);
       handleClose(e, 'edit');
     } else {
-      updateActivities([...activities, newActivity as IActivity]);
+      const activitiesArray = [...activities, newActivity as IActivity];
+
+      activitiesArray.sort((a, b) =>
+        a.date
+          ? a.date.isAfter(dayjs(b.date ? b.date : '3023-07-12T00:00'))
+            ? -1
+            : 1
+          : 1
+      );
+
+      updateActivities(activitiesArray);
       handleClose(e, 'add');
     }
   }

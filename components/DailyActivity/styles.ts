@@ -10,12 +10,13 @@ export const ActivityDate = styled(Typography)`
 `;
 
 export const ActivityHour = styled(Typography)`
-  margin-bottom: var(--space-md);
   height: 48px;
+  margin-bottom: var(--space-md);
 `;
 
 export const ActivityDescription = styled(Typography)`
-  white-space: nowrap;
+  height: 40px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 `;

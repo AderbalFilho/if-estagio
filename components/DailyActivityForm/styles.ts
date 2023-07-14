@@ -5,6 +5,7 @@ import { screenDevice } from '@/shared/device';
 
 export const ActivityFormContainer = styled(Box)`
   display: grid;
+  margin-top: var(--space-sm);
   row-gap: var(--space-sm);
 `;
 
