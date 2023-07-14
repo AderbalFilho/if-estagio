@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DatePicker } from '@mui/x-date-pickers';
+import { Dayjs } from 'dayjs';
 
 import { MainContext } from '@/contexts/MainContext';
 
@@ -22,7 +23,7 @@ const UserInfoForm = () => {
     updateUser({ ...user, [id]: value });
   }
 
-  function changeUserFromDate(id: string, newValue: Date | null) {
+  function changeUserFromDate(id: string, newValue: Dayjs | null) {
     updateUser({ ...user, [id]: newValue });
   }
 
@@ -104,7 +105,7 @@ const UserInfoForm = () => {
         <S.InternshipInfo>
           <DatePicker
             value={user.internshipBegin}
-            onChange={(newValue: Date | null) =>
+            onChange={(newValue: Dayjs | null) =>
               changeUserFromDate('internshipBegin', newValue)
             }
             label="Início do estágio"
@@ -113,7 +114,7 @@ const UserInfoForm = () => {
           <DatePicker
             value={user.internshipEnd}
             minDate={user.internshipBegin || undefined}
-            onChange={(newValue: Date | null) =>
+            onChange={(newValue: Dayjs | null) =>
               changeUserFromDate('internshipEnd', newValue)
             }
             label="Fim do estágio"

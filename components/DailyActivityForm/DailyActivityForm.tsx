@@ -45,6 +45,7 @@ const DailyActivityForm = ({
     if (activity) {
       setIsEditing(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleDelete(e: object) {
