@@ -10,9 +10,11 @@ const lato14Center = {
 };
 
 const internshipInfo = {
+  flexDirection: 'row',
   fontFamily: 'Lato',
   fontSize: 11,
   fontWeight: 'bold',
+  justifyContent: 'space-between',
   margin: '2.5mm 15mm 0',
 };
 
@@ -51,9 +53,5 @@ export default StyleSheet.create({
     ...internshipInfo,
     margin: '5mm 15mm 0',
   } as Style,
-  internshipInfo: {
-    ...internshipInfo,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  } as Style,
+  internshipInfo: internshipInfo as Style,
 });

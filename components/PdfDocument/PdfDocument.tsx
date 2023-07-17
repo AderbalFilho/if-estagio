@@ -4,13 +4,14 @@ import { Page, Text, View, Document, Image, Font } from '@react-pdf/renderer';
 import dayjs from 'dayjs';
 
 import ifceLogo from '@/assets/ifce-logo.jpg';
-
-import styles from './styles';
 import {
   IActivity,
   IActivityLocalStorage,
 } from '@/interfaces/activities.model';
 import { IUser } from '@/interfaces/user.model';
+import { configDate } from '@/shared/config-date';
+
+import styles from './styles';
 
 Font.register({
   family: 'Lato',
@@ -39,8 +40,10 @@ const PdfDocument = () => {
       if (user) {
         setUser({
           ...user,
-          internshipBegin: dayjs(user.internshipBegin),
-          internshipEnd: dayjs(user.internshipEnd),
+          internshipBegin: user.internshipBegin
+            ? dayjs(user.internshipBegin)
+            : null,
+          internshipEnd: user.internshipEnd ? dayjs(user.internshipEnd) : null,
         });
       }
 
@@ -104,6 +107,41 @@ const PdfDocument = () => {
             EMPRESA:{' '}
             {user?.company ||
               '_________________________________________________________________________________________________________'}
+          </Text>
+        </View>
+        <View style={styles.internshipInfo}>
+          <Text>
+            PERÍODO DO ESTÁGIO: DE{' '}
+            {configDate(user?.internshipBegin) || '______/______/___________'} A{' '}
+            {configDate(user?.internshipEnd) || '______/______/___________'}
+          </Text>
+          <Text>
+            C.H:{' '}
+            {user?.workload && user?.workload !== '0'
+              ? user?.workload
+              : '_________________'}{' '}
+            HORAS
+          </Text>
+        </View>
+        <View style={styles.internshipInfo}>
+          <Text>
+            ÁREA DE ESTÁGIO:{' '}
+            {user?.internshipArea ||
+              '_______________________________________________________________________________________________'}
+          </Text>
+        </View>
+        <View style={styles.internshipInfo}>
+          <Text>
+            PROFESSOR ORIENTADOR:{' '}
+            {user?.teacherAdvisor ||
+              '_____________________________________________________________________________________'}
+          </Text>
+        </View>
+        <View style={styles.internshipInfo}>
+          <Text>
+            SUPERVISOR DO ESTÁGIO:{' '}
+            {user?.internshipSupervisor ||
+              '______________________________________________________________________________________'}
           </Text>
         </View>
       </Page>
