@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 
 import PdfDocument from '@/components/PdfDocument';
@@ -68,8 +68,10 @@ const TheHeader = () => {
         IF Estágio
       </Typography>
       <S.ActionButtons>
-        <S.ActionButton variant="contained" onClick={handleImportClick}>
-          Importar JSON
+        <S.ActionButton>
+          <Button variant="contained" onClick={handleImportClick}>
+            Importar JSON
+          </Button>
         </S.ActionButton>
         <S.InputUpload
           ref={inputUploadRef}
@@ -77,12 +79,14 @@ const TheHeader = () => {
           accept=".json"
           onChange={handleImport}
         />
-        <S.ActionButton
-          href={`data:text/json;charset=utf-8,${internshipInfo}`}
-          download="relatorio-diario.json"
-          variant="contained"
-        >
-          Exportar como JSON
+        <S.ActionButton>
+          <Button
+            href={`data:text/json;charset=utf-8,${internshipInfo}`}
+            download="relatorio-diario.json"
+            variant="contained"
+          >
+            Exportar como JSON
+          </Button>
         </S.ActionButton>
         <PDFDownloadLink
           document={<PdfDocument />}
@@ -92,12 +96,12 @@ const TheHeader = () => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             ({ blob, url, loading, error }) =>
               loading ? (
-                <S.ActionButton variant="contained">
-                  Carregando...
+                <S.ActionButton>
+                  <Button variant="contained">Carregando...</Button>
                 </S.ActionButton>
               ) : (
-                <S.ActionButton variant="contained">
-                  Download do pdf
+                <S.ActionButton>
+                  <Button variant="contained">Download do pdf</Button>
                 </S.ActionButton>
               )
           }

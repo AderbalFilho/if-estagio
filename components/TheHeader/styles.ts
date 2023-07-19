@@ -19,12 +19,15 @@ export const ActionButtons = styled.div`
   }
 `;
 
-export const ActionButton = styled(Button)`
+export const ActionButton = styled.div`
+  display: flex;
   margin-bottom: var(--space-sm) !important;
+  justify-content: center;
   width: 100%;
 
   @media ${screenDevice.tablet} {
     margin-bottom: 0;
+    justify-content: unset;
     width: auto;
   }
 `;
