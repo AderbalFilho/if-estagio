@@ -24,7 +24,7 @@ const UserInfoForm = () => {
   }
 
   function changeUserFromDate(id: string, newValue: Dayjs | null) {
-    updateUser({ ...user, [id]: newValue });
+    updateUser({ ...user, [id]: newValue || null });
   }
 
   function changeUserFromNumber(e: React.ChangeEvent<HTMLInputElement>) {

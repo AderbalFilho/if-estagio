@@ -1,15 +1,13 @@
-/* eslint-disable jsx-a11y/alt-text */
-import { useState, useLayoutEffect } from 'react';
-import { Page, Text, View, Document, Image, Font } from '@react-pdf/renderer';
+import { useLayoutEffect, useState } from 'react';
+import { Page, Document, Font } from '@react-pdf/renderer';
 import dayjs from 'dayjs';
 
-import ifceLogo from '@/assets/ifce-logo.jpg';
 import {
   IActivity,
   IActivityLocalStorage,
 } from '@/interfaces/activities.model';
-import { IUser } from '@/interfaces/user.model';
-import { configDate } from '@/shared/config-date';
+import PdfHeader from '@/components/PdfHeader';
+import PdfTable from '@/components/PdfTable';
 
 import styles from './styles';
 
@@ -23,29 +21,22 @@ Font.register({
       src: 'https://fonts.cdnfonts.com/s/14882/Lato-Bold.woff',
       fontWeight: 'bold',
     },
+    {
+      src: 'https://fonts.cdnfonts.com/s/14882/Lato-Black.woff',
+      fontWeight: 900,
+    },
   ],
 });
 
 const PdfDocument = () => {
-  const [user, setUser] = useState({} as IUser);
   const [activities, setActivities] = useState([] as IActivity[]);
 
+  /* Don't know why, but Context is not working here */
   useLayoutEffect(() => {
     const internshipInfoString = localStorage.getItem('internshipInfo');
 
-    console.log(activities);
     if (internshipInfoString) {
-      const { user, activities } = JSON.parse(internshipInfoString);
-
-      if (user) {
-        setUser({
-          ...user,
-          internshipBegin: user.internshipBegin
-            ? dayjs(user.internshipBegin)
-            : null,
-          internshipEnd: user.internshipEnd ? dayjs(user.internshipEnd) : null,
-        });
-      }
+      const { activities } = JSON.parse(internshipInfoString);
 
       if (activities) {
         const newActivities: IActivity[] = activities.map(
@@ -70,80 +61,23 @@ const PdfDocument = () => {
     }
   }, []);
 
+  function firstPageActivities(): IActivity[] {
+    if (activities.length === 0) {
+      return [];
+    }
+
+    if (activities.length <= 6) {
+      return activities;
+    }
+
+    return activities.slice(0, 6);
+  }
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Image src={ifceLogo.src} style={styles.logo} />
-        <View style={styles.info}>
-          <Text>COORDENADORIA DE INTEGRAÇÃO ESCOLA SOCIEDADE - CIES</Text>
-          <Text>SETOR DE ESTÁGIO</Text>
-        </View>
-        <View style={styles.subinfo}>
-          <Text>ESTÁGIO REMOTO</Text>
-        </View>
-        <View style={styles.title}>
-          <Text>RELATÓRIO DIÁRIO DE ESTÁGIO</Text>
-        </View>
-        <View style={styles.dontErasure}>
-          <Text>NÃO PODE CONTER RASURAS</Text>
-        </View>
-        <View style={styles.internshipName}>
-          <Text>
-            NOME DO ESTAGIÁRIO:{' '}
-            {user?.name ||
-              '_________________________________________________________________________________________'}
-          </Text>
-        </View>
-        <View style={styles.internshipInfo}>
-          <Text>
-            CURSO:{' '}
-            {user?.course || '_______________________________________________'}
-          </Text>
-          <Text>SÉRIE/SEMESTRE: {user?.semester || '_____________'}</Text>
-          <Text>TURMA: {user?.class || '_____________'}</Text>
-        </View>
-        <View style={styles.internshipInfo}>
-          <Text>
-            EMPRESA:{' '}
-            {user?.company ||
-              '_________________________________________________________________________________________________________'}
-          </Text>
-        </View>
-        <View style={styles.internshipInfo}>
-          <Text>
-            PERÍODO DO ESTÁGIO: DE{' '}
-            {configDate(user?.internshipBegin) || '______/______/___________'} A{' '}
-            {configDate(user?.internshipEnd) || '______/______/___________'}
-          </Text>
-          <Text>
-            C.H:{' '}
-            {user?.workload && user?.workload !== '0'
-              ? user?.workload
-              : '_________________'}{' '}
-            HORAS
-          </Text>
-        </View>
-        <View style={styles.internshipInfo}>
-          <Text>
-            ÁREA DE ESTÁGIO:{' '}
-            {user?.internshipArea ||
-              '_______________________________________________________________________________________________'}
-          </Text>
-        </View>
-        <View style={styles.internshipInfo}>
-          <Text>
-            PROFESSOR ORIENTADOR:{' '}
-            {user?.teacherAdvisor ||
-              '_____________________________________________________________________________________'}
-          </Text>
-        </View>
-        <View style={styles.internshipInfo}>
-          <Text>
-            SUPERVISOR DO ESTÁGIO:{' '}
-            {user?.internshipSupervisor ||
-              '______________________________________________________________________________________'}
-          </Text>
-        </View>
+        <PdfHeader />
+        <PdfTable maxRows={6} activities={firstPageActivities()} />
       </Page>
     </Document>
   );
