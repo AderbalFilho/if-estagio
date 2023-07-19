@@ -8,6 +8,7 @@ import {
 } from '@/interfaces/activities.model';
 import PdfHeader from '@/components/PdfHeader';
 import PdfTable from '@/components/PdfTable';
+import PdfSignature from '@/components/PdfSignature';
 
 import styles from './styles';
 
@@ -61,26 +62,41 @@ const PdfDocument = () => {
     }
   }, []);
 
-  function firstPageActivities(): IActivity[] {
-    if (activities.length === 0) {
-      return [];
-    }
-
-    if (activities.length <= 6) {
-      return activities;
-    }
-
-    return activities.slice(0, 6);
-  }
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <PdfHeader />
-        <PdfTable maxRows={6} activities={firstPageActivities()} />
+        <PdfTable maxRows={6} activities={firstPageActivities(activities)} />
+      </Page>
+      <Page size="A4" style={styles.page}>
+        <PdfHeader hasJustImage />
+        <PdfTable maxRows={7} activities={secondPageActivities(activities)} />
+        <PdfSignature />
       </Page>
     </Document>
   );
 };
+
+function firstPageActivities(activities: IActivity[]): IActivity[] {
+  if (!activities.length) {
+    return [];
+  }
+
+  if (activities.length <= 6) {
+    return activities;
+  }
+
+  return activities.slice(0, 6);
+}
+
+function secondPageActivities(activities: IActivity[]): IActivity[] {
+  if (!activities.length || activities.length <= 6) {
+    return [];
+  }
+
+  const maxArrayLength = activities.length <= 13 ? 13 : activities.length;
+
+  return activities.slice(6, maxArrayLength);
+}
 
 export default PdfDocument;

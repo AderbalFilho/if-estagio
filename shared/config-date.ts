@@ -27,9 +27,9 @@ export function configHourFromTo(
   hourEnd1: Dayjs | null | undefined,
   hourBegin2: Dayjs | null | undefined,
   hourEnd2: Dayjs | null | undefined,
-  showAnyway = false
+  isShownAnyway = false
 ): string {
-  if (showAnyway) {
+  if (isShownAnyway) {
     return showHourAnyway(hourBegin1, hourEnd1, hourBegin2, hourEnd2);
   }
 
