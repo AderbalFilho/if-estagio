@@ -17,10 +17,12 @@ import dayjs from 'dayjs';
 const TheHeader = () => {
   const { updateActivities, updateUser } = useContext(MainContext);
   const [internshipInfo, setInternshipInfo] = useState('');
+  const [isClient, setIsClient] = useState(false);
   const inputUploadRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setInternshipInfo(localStorage?.getItem('internshipInfo') || '');
+    setIsClient(true);
   }, []);
 
   function handleImportClick() {
@@ -88,24 +90,26 @@ const TheHeader = () => {
             Exportar como JSON
           </Button>
         </S.ActionButton>
-        <PDFDownloadLink
-          document={<PdfDocument />}
-          fileName="relatorio-diario.pdf"
-        >
-          {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            ({ blob, url, loading, error }) =>
-              loading ? (
-                <S.ActionButton>
-                  <Button variant="contained">Carregando...</Button>
-                </S.ActionButton>
-              ) : (
-                <S.ActionButton>
-                  <Button variant="contained">Download do pdf</Button>
-                </S.ActionButton>
-              )
-          }
-        </PDFDownloadLink>
+        {isClient && (
+          <PDFDownloadLink
+            document={<PdfDocument />}
+            fileName="relatorio-diario.pdf"
+          >
+            {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              ({ blob, url, loading, error }) =>
+                loading ? (
+                  <S.ActionButton>
+                    <Button variant="contained">Carregando...</Button>
+                  </S.ActionButton>
+                ) : (
+                  <S.ActionButton>
+                    <Button variant="contained">Download do pdf</Button>
+                  </S.ActionButton>
+                )
+            }
+          </PDFDownloadLink>
+        )}
       </S.ActionButtons>
     </S.Header>
   );
