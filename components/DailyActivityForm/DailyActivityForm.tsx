@@ -45,8 +45,7 @@ const DailyActivityForm = ({
     if (activity) {
       setIsEditing(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activity]);
 
   function handleDelete(e: object) {
     /* TODO: Confirm deletion */
@@ -105,7 +104,7 @@ const DailyActivityForm = ({
           <DatePicker
             value={newActivity.date || null}
             onChange={(newValue: Dayjs | null) =>
-              setNewActivity({ ...newActivity, date: newValue })
+              setNewActivity({ ...newActivity, date: newValue || null })
             }
             label="Data da atividade"
           />
@@ -118,7 +117,7 @@ const DailyActivityForm = ({
               onChange={(newValue: Dayjs | null) =>
                 setNewActivity({
                   ...newActivity,
-                  hourBegin1: newValue,
+                  hourBegin1: newValue || null,
                 })
               }
             />
@@ -129,7 +128,7 @@ const DailyActivityForm = ({
               onChange={(newValue: Dayjs | null) =>
                 setNewActivity({
                   ...newActivity,
-                  hourEnd1: newValue,
+                  hourEnd1: newValue || null,
                 })
               }
             />
@@ -142,7 +141,7 @@ const DailyActivityForm = ({
               onChange={(newValue: Dayjs | null) =>
                 setNewActivity({
                   ...newActivity,
-                  hourBegin2: newValue,
+                  hourBegin2: newValue || null,
                 })
               }
             />
@@ -153,7 +152,7 @@ const DailyActivityForm = ({
               onChange={(newValue: Dayjs | null) =>
                 setNewActivity({
                   ...newActivity,
-                  hourEnd2: newValue,
+                  hourEnd2: newValue || null,
                 })
               }
             />

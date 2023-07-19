@@ -1,7 +1,7 @@
 import { Button, CardActions, CardContent } from '@mui/material';
 
 import { IActivity } from '@/interfaces/activities.model';
-import { configDate, configHour } from '@/shared/config-date';
+import { configDate, configHourFromTo } from '@/shared/config-date';
 
 import * as S from './styles';
 
@@ -27,12 +27,13 @@ const DailyActivity = ({
           Data: {configDate(activity?.date)}
         </S.ActivityDate>
         <S.ActivityHour color="text.secondary">
-          {configHour(activity?.hourBegin1)} às {configHour(activity?.hourEnd1)}{' '}
-          {activity?.hourBegin2 &&
-            activity?.hourEnd2 &&
-            `e de ${configHour(activity?.hourBegin2)} às ${configHour(
-              activity?.hourEnd2
-            )}`}
+          {configHourFromTo(
+            activity?.hourBegin1,
+            activity?.hourEnd1,
+            activity?.hourBegin2,
+            activity?.hourEnd2,
+            true
+          )}
         </S.ActivityHour>
         <S.ActivityDescription variant="body2">
           Atividade:

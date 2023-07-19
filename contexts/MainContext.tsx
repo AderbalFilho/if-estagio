@@ -42,8 +42,10 @@ export function MainContextProvider({ children }: { children: ReactNode }) {
       if (user) {
         setUser({
           ...user,
-          internshipBegin: dayjs(user.internshipBegin),
-          internshipEnd: dayjs(user.internshipEnd),
+          internshipBegin: user.internshipBegin
+            ? dayjs(user.internshipBegin)
+            : null,
+          internshipEnd: user.internshipEnd ? dayjs(user.internshipEnd) : null,
         });
       }
 
