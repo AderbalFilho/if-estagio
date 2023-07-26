@@ -1,7 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
+  Button,
   InputAdornment,
   TextField,
   Typography,
@@ -16,15 +17,20 @@ import * as S from './styles';
 
 const UserInfoForm = () => {
   const { user, updateUser } = useContext(MainContext);
+  const [userState, setUserState] = useState(user);
+
+  useEffect(() => {
+    setUserState(user);
+  }, [user]);
 
   function changeUser(e: React.ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
 
-    updateUser({ ...user, [id]: value });
+    setUserState({ ...userState, [id]: value });
   }
 
   function changeUserFromDate(id: string, newValue: Dayjs | null) {
-    updateUser({ ...user, [id]: newValue || null });
+    setUserState({ ...userState, [id]: newValue || null });
   }
 
   function changeUserFromNumber(e: React.ChangeEvent<HTMLInputElement>) {
@@ -38,8 +44,12 @@ const UserInfoForm = () => {
     changeUser(e);
   }
 
+  function handleSave() {
+    updateUser({ ...userState });
+  }
+
   return (
-    <Accordion TransitionProps={{ unmountOnExit: true }}>
+    <Accordion>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="user-info-content"
@@ -51,60 +61,68 @@ const UserInfoForm = () => {
         <TextField
           fullWidth
           required
-          error={!user.name.trim()}
+          error={!userState.name.trim()}
           id="name"
           label="Nome"
-          value={user.name}
+          value={userState.name}
           onChange={changeUser}
-          helperText={!user.name.trim() && 'Essa informação é obrigatória.'}
+          helperText={
+            !userState.name.trim() && 'Essa informação é obrigatória.'
+          }
         />
         <S.UniversityInfo>
           <TextField
             fullWidth
             required
-            error={!user.course.trim()}
+            error={!userState.course.trim()}
             id="course"
             label="Curso"
-            value={user.course}
-            onChange={changeUser}
-            helperText={!user.course.trim() && 'Essa informação é obrigatória.'}
-          />
-          <TextField
-            fullWidth
-            required
-            error={!user.semester.trim()}
-            id="semester"
-            label="Série/Semestre"
-            value={user.semester}
+            value={userState.course}
             onChange={changeUser}
             helperText={
-              !user.semester.trim() && 'Essa informação é obrigatória.'
+              !userState.course.trim() && 'Essa informação é obrigatória.'
             }
           />
           <TextField
             fullWidth
             required
-            error={!user.class.trim()}
+            error={!userState.semester.trim()}
+            id="semester"
+            label="Série/Semestre"
+            value={userState.semester}
+            onChange={changeUser}
+            helperText={
+              !userState.semester.trim() && 'Essa informação é obrigatória.'
+            }
+          />
+          <TextField
+            fullWidth
+            required
+            error={!userState.class.trim()}
             id="class"
             label="Turma"
-            value={user.class}
+            value={userState.class}
             onChange={changeUser}
-            helperText={!user.class.trim() && 'Essa informação é obrigatória.'}
+            helperText={
+              !userState.class.trim() && 'Essa informação é obrigatória.'
+            }
           />
         </S.UniversityInfo>
         <TextField
           fullWidth
           required
-          error={!user.company.trim()}
+          error={!userState.company.trim()}
           id="company"
           label="Empresa"
-          value={user.company}
+          value={userState.company}
           onChange={changeUser}
-          helperText={!user.company.trim() && 'Essa informação é obrigatória.'}
+          helperText={
+            !userState.company.trim() && 'Essa informação é obrigatória.'
+          }
         />
         <S.InternshipInfo>
           <DatePicker
-            value={user.internshipBegin}
+            value={userState.internshipBegin}
             onChange={(newValue: Dayjs | null) =>
               changeUserFromDate('internshipBegin', newValue)
             }
@@ -112,8 +130,8 @@ const UserInfoForm = () => {
           />
           {/* TODO: Put error message if end date is lower than begin date */}
           <DatePicker
-            value={user.internshipEnd}
-            minDate={user.internshipBegin || undefined}
+            value={userState.internshipEnd}
+            minDate={userState.internshipBegin || undefined}
             onChange={(newValue: Dayjs | null) =>
               changeUserFromDate('internshipEnd', newValue)
             }
@@ -122,14 +140,14 @@ const UserInfoForm = () => {
           <TextField
             fullWidth
             required
-            error={user.workload === '0'}
+            error={userState.workload === '0'}
             id="workload"
             type="number"
             label="Carga horária"
-            value={user.workload}
+            value={userState.workload}
             onChange={changeUserFromNumber}
             helperText={
-              user.workload === '0' && 'Escreva uma quantidade válida.'
+              userState.workload === '0' && 'Escreva uma quantidade válida.'
             }
             InputLabelProps={{
               shrink: true,
@@ -143,41 +161,42 @@ const UserInfoForm = () => {
         </S.InternshipInfo>
         <TextField
           fullWidth
-          error={!user.internshipArea.trim()}
+          error={!userState.internshipArea.trim()}
           required
           id="internshipArea"
           label="Área de estágio"
-          value={user.internshipArea}
+          value={userState.internshipArea}
           onChange={changeUser}
           helperText={
-            !user.internshipArea.trim() && 'Essa informação é obrigatória.'
+            !userState.internshipArea.trim() && 'Essa informação é obrigatória.'
           }
         />
         <TextField
           fullWidth
-          error={!user.teacherAdvisor.trim()}
+          error={!userState.teacherAdvisor.trim()}
           required
           id="teacherAdvisor"
           label="Professor orientador"
-          value={user.teacherAdvisor}
+          value={userState.teacherAdvisor}
           onChange={changeUser}
           helperText={
-            !user.teacherAdvisor.trim() && 'Essa informação é obrigatória.'
+            !userState.teacherAdvisor.trim() && 'Essa informação é obrigatória.'
           }
         />
         <TextField
           fullWidth
-          error={!user.internshipSupervisor.trim()}
+          error={!userState.internshipSupervisor.trim()}
           required
           id="internshipSupervisor"
           label="Supervisor do estágio"
-          value={user.internshipSupervisor}
+          value={userState.internshipSupervisor}
           onChange={changeUser}
           helperText={
-            !user.internshipSupervisor.trim() &&
+            !userState.internshipSupervisor.trim() &&
             'Essa informação é obrigatória.'
           }
         />
+        <Button onClick={handleSave}>Salvar</Button>
       </S.UserAccordion>
     </Accordion>
   );
