@@ -1,16 +1,68 @@
-import { Box, Grid, Link, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
+import {
+  Alert,
+  Box,
+  Link,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useRouter } from 'next/navigation';
+
+import signIn from '@/firebase/auth/signin';
 
 import * as S from './styles';
 
 const Login = () => {
+  const [loginInfo, setLoginInfo] = useState({ email: '', password: '' } as {
+    email: string;
+    password: string;
+  });
+  const [open, setOpen] = useState(false);
+  const [err, setErr] = useState<Error>();
   const router = useRouter();
 
-  function handleSubmit() {}
+  async function handleSubmit(e: React.ChangeEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const { error } = await signIn(loginInfo.email, loginInfo.password);
+
+    if (error) {
+      setErr(error as Error);
+      setOpen(true);
+      return;
+    }
+
+    router.push('/');
+  }
 
   function handleLink() {
     router.push('/signup');
+  }
+
+  function checkAcademicOrRootEmail(): boolean {
+    return (
+      /^[a-zA-Z0-9._%+-]+@(?:aluno.)?ifce.edu.br$/.test(loginInfo.email) ||
+      loginInfo.email === 'aderbalcrato@gmail.com'
+    );
+  }
+
+  function changeLogin(e: React.ChangeEvent<HTMLInputElement>) {
+    const { id, value } = e.target;
+
+    setLoginInfo({ ...loginInfo, [id]: value } as {
+      email: string;
+      password: string;
+    });
+  }
+
+  function handleClose(event?: React.SyntheticEvent | Event, reason?: string) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   }
 
   return (
@@ -45,6 +97,14 @@ const Login = () => {
           name="email"
           autoComplete="email"
           autoFocus
+          value={loginInfo.email}
+          onChange={changeLogin}
+          error={!checkAcademicOrRootEmail() && loginInfo.email !== ''}
+          helperText={
+            !checkAcademicOrRootEmail() &&
+            loginInfo.email !== '' &&
+            'Este não é um email acadêmico.'
+          }
         />
         <TextField
           margin="normal"
@@ -55,8 +115,15 @@ const Login = () => {
           type="password"
           id="password"
           autoComplete="current-password"
+          value={loginInfo.password}
+          onChange={changeLogin}
         />
-        <S.SubmitButton type="submit" fullWidth variant="contained">
+        <S.SubmitButton
+          type="submit"
+          disabled={!loginInfo.password || !checkAcademicOrRootEmail()}
+          fullWidth
+          variant="contained"
+        >
           Login
         </S.SubmitButton>
         <S.SignupContainer>
@@ -65,6 +132,11 @@ const Login = () => {
           </Link>
         </S.SignupContainer>
       </Box>
+      <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {err?.toString()}
+        </Alert>
+      </Snackbar>
     </S.LoginContainer>
   );
 };

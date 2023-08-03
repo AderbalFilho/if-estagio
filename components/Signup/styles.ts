@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, Button } from '@mui/material';
 
 export const SignupContainer = styled(Box)`
   align-items: center;
