@@ -23,18 +23,18 @@ export default function Home() {
   }, [user, router]);
 
   return (
-    <S.Main>
-      <MainContextProvider>
-        <DatepickerLocalizationProvider>
-          {!!user && (
-            <>
-              <TheHeader />
+    <MainContextProvider>
+      <DatepickerLocalizationProvider>
+        {!!user && (
+          <>
+            <TheHeader />
+            <S.Main>
               <UserInfoForm />
               <DailyActivities />
-            </>
-          )}
-        </DatepickerLocalizationProvider>
-      </MainContextProvider>
-    </S.Main>
+            </S.Main>
+          </>
+        )}
+      </DatepickerLocalizationProvider>
+    </MainContextProvider>
   );
 }

@@ -1,7 +1,14 @@
 'use client';
 
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Button, Typography } from '@mui/material';
+import {
+  Alert,
+  AppBar,
+  Button,
+  Snackbar,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 
 import PdfDocument from '@/components/PdfDocument';
@@ -15,17 +22,35 @@ import { MainContext } from '@/contexts/MainContext';
 
 import * as S from './styles';
 import dayjs from 'dayjs';
+import signOut from '@/firebase/auth/signout';
+import { useRouter } from 'next/navigation';
 
 const TheHeader = () => {
   const { updateActivities, updateUser } = useContext(MainContext);
   const [internshipInfo, setInternshipInfo] = useState('');
   const [isClient, setIsClient] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [err, setErr] = useState<Error>();
   const inputUploadRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setInternshipInfo(localStorage?.getItem('internshipInfo') || '');
     setIsClient(true);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  function handleResize() {
+    if (window.innerWidth < 720) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }
 
   function handleImportClick() {
     if (inputUploadRef.current != null) {
@@ -66,54 +91,101 @@ const TheHeader = () => {
     };
   }
 
+  async function handleSignout() {
+    const { error } = await signOut();
+
+    if (error) {
+      setErr(error as Error);
+      setOpen(true);
+      return;
+    }
+
+    router.push('/login');
+  }
+
+  function handleClose(event?: React.SyntheticEvent | Event, reason?: string) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  }
+
   return (
-    <S.Header>
-      <Typography variant="h2" component="h1">
-        IF Estágio
-      </Typography>
-      <S.ActionButtons>
-        <S.ActionButton>
-          <Button variant="contained" onClick={handleImportClick}>
-            Importar JSON
-          </Button>
-        </S.ActionButton>
-        <S.InputUpload
-          ref={inputUploadRef}
-          type="file"
-          accept=".json"
-          onChange={handleImport}
-        />
-        <S.ActionButton>
+    <AppBar
+      position="static"
+      color="default"
+      elevation={0}
+      sx={{ borderBottom: '1px solid #d3d3d3' }}
+    >
+      <Toolbar
+        sx={isMobile ? { flexDirection: 'column' } : { flexWrap: 'wrap' }}
+      >
+        <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          sx={{ flexGrow: 1, color: '#19882c' }}
+        >
+          Sistema de Apoio ao Estagiário
+        </Typography>
+        <nav>
           <Button
+            sx={{ my: 1, mx: 1, color: '#19882c' }}
+            onClick={handleImportClick}
+          >
+            Importar
+          </Button>
+          <S.InputUpload
+            ref={inputUploadRef}
+            type="file"
+            accept=".json"
+            onChange={handleImport}
+          />
+          <Button
+            sx={{ my: 1, mx: 1, color: '#19882c' }}
             href={`data:text/json;charset=utf-8,${internshipInfo}`}
             download="relatorio-diario.json"
-            variant="contained"
           >
-            Exportar como JSON
+            Exportar
           </Button>
-        </S.ActionButton>
-        {isClient && (
-          <PDFDownloadLink
-            document={<PdfDocument />}
-            fileName="relatorio-diario.pdf"
-          >
-            {
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              ({ blob, url, loading, error }) =>
-                loading ? (
-                  <S.ActionButton>
-                    <Button variant="contained">Carregando...</Button>
-                  </S.ActionButton>
-                ) : (
-                  <S.ActionButton>
-                    <Button variant="contained">Download do pdf</Button>
-                  </S.ActionButton>
-                )
-            }
-          </PDFDownloadLink>
-        )}
-      </S.ActionButtons>
-    </S.Header>
+          {isClient && (
+            <PDFDownloadLink
+              document={<PdfDocument />}
+              fileName="relatorio-diario.pdf"
+            >
+              {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                ({ blob, url, loading, error }) =>
+                  loading ? (
+                    <Button sx={{ my: 1, mx: 1, color: '#19882c' }}>
+                      Aguarde...
+                    </Button>
+                  ) : (
+                    <Button sx={{ my: 1, mx: 1, color: '#19882c' }}>
+                      Criar pdf
+                    </Button>
+                  )
+              }
+            </PDFDownloadLink>
+          )}
+        </nav>
+        <Button
+          href="#"
+          variant="outlined"
+          color="error"
+          sx={{ my: 1, mx: 1 }}
+          onClick={handleSignout}
+        >
+          Logout
+        </Button>
+      </Toolbar>
+      <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {err?.toString()}
+        </Alert>
+      </Snackbar>
+    </AppBar>
   );
 };
 

@@ -8,6 +8,6 @@ export const Main = styled.main`
   min-height: 100vh;
 
   @media ${screenDevice.tablet} {
-    padding: 6rem;
+    padding: 2rem 6rem;
   }
 `;
