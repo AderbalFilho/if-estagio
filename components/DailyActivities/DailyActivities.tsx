@@ -74,7 +74,7 @@ const DailyActivities = () => {
         </S.AddActivity>
       </S.ActivitiesContainer>
       <S.ActivitiesCardsContainer>
-        {activities.map((activity, index) => (
+        {activities?.map((activity, index) => (
           <DailyActivity
             key={`activity-${index}`}
             activity={activity}

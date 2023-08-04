@@ -1,7 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import { useLayoutEffect, useState } from 'react';
 import { Text, View, Image } from '@react-pdf/renderer';
-import dayjs from 'dayjs';
 
 import ifceLogo from '@/assets/ifce-logo.jpg';
 import { IUser } from '@/interfaces/user.model';
@@ -9,28 +7,13 @@ import { configDate } from '@/shared/config-date';
 
 import styles from './styles';
 
-const PdfHeader = ({ hasJustImage }: { hasJustImage?: boolean }) => {
-  const [user, setUser] = useState({} as IUser);
-
-  /* Don't know why, but Context is not working here */
-  useLayoutEffect(() => {
-    const internshipInfoString = localStorage.getItem('internshipInfo');
-
-    if (internshipInfoString) {
-      const { user } = JSON.parse(internshipInfoString);
-
-      if (user) {
-        setUser({
-          ...user,
-          internshipBegin: user.internshipBegin
-            ? dayjs(user.internshipBegin)
-            : null,
-          internshipEnd: user.internshipEnd ? dayjs(user.internshipEnd) : null,
-        });
-      }
-    }
-  }, []);
-
+const PdfHeader = ({
+  user,
+  hasJustImage,
+}: {
+  user: IUser;
+  hasJustImage?: boolean;
+}) => {
   return (
     <>
       <Image src={ifceLogo.src} style={styles.logo} />
