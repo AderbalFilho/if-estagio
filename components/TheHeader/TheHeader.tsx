@@ -183,7 +183,12 @@ const TheHeader = () => {
           </Button>
           {isClient && (
             <PDFDownloadLink
-              document={<PdfDocument />}
+              document={
+                <PdfDocument
+                  activities={activitiesContext}
+                  user={userContext}
+                />
+              }
               fileName="relatorio-diario.pdf"
             >
               {
