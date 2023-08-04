@@ -9,7 +9,7 @@ export interface IActivity {
   description: string;
 }
 
-export interface IActivityLocalStorage {
+export interface IActivityStringify {
   date: string | null;
   hourBegin1: string | null;
   hourEnd1: string | null;

@@ -2,10 +2,7 @@ import { useLayoutEffect, useState } from 'react';
 import { Page, Document, Font } from '@react-pdf/renderer';
 import dayjs from 'dayjs';
 
-import {
-  IActivity,
-  IActivityLocalStorage,
-} from '@/interfaces/activities.model';
+import { IActivity, IActivityStringify } from '@/interfaces/activities.model';
 import PdfHeader from '@/components/PdfHeader';
 import PdfTable from '@/components/PdfTable';
 import PdfSignature from '@/components/PdfSignature';
@@ -41,7 +38,7 @@ const PdfDocument = () => {
 
       if (activities) {
         const newActivities: IActivity[] = activities.map(
-          (activity: IActivityLocalStorage): IActivity => {
+          (activity: IActivityStringify): IActivity => {
             return {
               date: activity.date ? dayjs(activity.date) : null,
               hourBegin1: activity.hourBegin1

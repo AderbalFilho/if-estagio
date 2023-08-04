@@ -1,10 +1,10 @@
-import {
-  IActivity,
-  IActivityLocalStorage,
-} from '@/interfaces/activities.model';
-import { IUser } from '@/interfaces/user.model';
-import dayjs from 'dayjs';
 import { ReactNode, createContext, useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+
+import { IActivity, IActivityStringify } from '@/interfaces/activities.model';
+import { IUser } from '@/interfaces/user.model';
+import { getActivities, getUser } from '@/firebase/firestore/getData';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const defaultUser: IUser = {
   name: '',
@@ -30,28 +30,49 @@ export const MainContext = createContext({
 });
 
 export function MainContextProvider({ children }: { children: ReactNode }) {
+  const { user: firebaseUser } = useAuthContext();
   const [user, setUser] = useState({ ...defaultUser });
   const [activities, setActivities] = useState([] as IActivity[]);
 
   useEffect(() => {
-    const internshipInfoString = localStorage.getItem('internshipInfo');
+    async function userInfo() {
+      const { result, error } = await getUser(
+        (firebaseUser as { uid: string })?.uid || ''
+      );
 
-    if (internshipInfoString) {
-      const { user, activities } = JSON.parse(internshipInfoString);
-
-      if (user) {
-        setUser({
-          ...user,
-          internshipBegin: user.internshipBegin
-            ? dayjs(user.internshipBegin)
-            : null,
-          internshipEnd: user.internshipEnd ? dayjs(user.internshipEnd) : null,
-        });
+      if (error) {
+        console.log(error);
+        return;
       }
+
+      const newUser = result?.data();
+
+      setUser({
+        ...newUser,
+        internshipBegin: newUser?.internshipBegin
+          ? dayjs(newUser.internshipBegin)
+          : null,
+        internshipEnd: newUser?.internshipEnd
+          ? dayjs(newUser.internshipEnd)
+          : null,
+      } as IUser);
+    }
+
+    async function activitiesInfo() {
+      const { result, error } = await getActivities(
+        (firebaseUser as { uid: string })?.uid || ''
+      );
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      const activities = JSON.parse(result?.data()?.activities || '[]');
 
       if (activities) {
         const newActivities: IActivity[] = activities.map(
-          (activity: IActivityLocalStorage): IActivity => {
+          (activity: IActivityStringify): IActivity => {
             return {
               date: activity.date ? dayjs(activity.date) : null,
               hourBegin1: activity.hourBegin1
@@ -70,31 +91,16 @@ export function MainContextProvider({ children }: { children: ReactNode }) {
         setActivities(newActivities);
       }
     }
-  }, []);
+
+    userInfo();
+    activitiesInfo();
+  }, [firebaseUser]);
 
   function updateUser(user: IUser) {
-    const internshipInfo = JSON.parse(
-      localStorage.getItem('internshipInfo') || '{}'
-    );
-
-    localStorage.setItem(
-      'internshipInfo',
-      JSON.stringify({ user, activities: internshipInfo?.activities || '' })
-    );
-
     setUser(user);
   }
 
   function updateActivities(activities: IActivity[]) {
-    const internshipInfo = JSON.parse(
-      localStorage.getItem('internshipInfo') || '{}'
-    );
-
-    localStorage.setItem(
-      'internshipInfo',
-      JSON.stringify({ user: internshipInfo?.user || '', activities })
-    );
-
     setActivities(activities);
   }
 

@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
 import {
+  Alert,
   Button,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
   TextField,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -11,7 +13,9 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { IActivity } from '@/interfaces/activities.model';
+import { addActivities } from '@/firebase/firestore/addData';
 import { MainContext } from '@/contexts/MainContext';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 import * as S from './styles';
 
@@ -40,6 +44,9 @@ const DailyActivityForm = ({
     { ...activity } || { ...defaultActivity }
   );
   const { activities, updateActivities } = useContext(MainContext);
+  const { user: firebaseUser } = useAuthContext();
+  const [open, setOpen] = useState(false);
+  const [err, setErr] = useState<Error>();
 
   useEffect(() => {
     if (activity) {
@@ -50,10 +57,13 @@ const DailyActivityForm = ({
   function handleDelete(e: object) {
     /* TODO: Confirm deletion */
     if (index || index === 0) {
-      updateActivities([
+      const activitiesArray = [
         ...activities.slice(0, index),
         ...activities.slice(index + 1, activities.length),
-      ]);
+      ];
+
+      updateActivities(activitiesArray);
+      saveOnFirebase(activitiesArray);
       handleClose(e, 'delete');
     }
   }
@@ -76,6 +86,7 @@ const DailyActivityForm = ({
       );
 
       updateActivities(activitiesArray);
+      saveOnFirebase(activitiesArray);
       handleClose(e, 'edit');
     } else {
       const activitiesArray = [...activities, newActivity as IActivity];
@@ -89,8 +100,34 @@ const DailyActivityForm = ({
       );
 
       updateActivities(activitiesArray);
+      saveOnFirebase(activitiesArray);
       handleClose(e, 'add');
     }
+  }
+
+  async function saveOnFirebase(activities: IActivity[]) {
+    setErr(undefined);
+    const { error } = await addActivities(
+      (firebaseUser as { uid: string })?.uid || '',
+      { activities: JSON.stringify(activities) || '[]' }
+    );
+
+    if (error) {
+      setErr(error as Error);
+    }
+
+    setOpen(true);
+  }
+
+  function handleCloseAlert(
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   }
 
   return (
@@ -184,6 +221,15 @@ const DailyActivityForm = ({
         {activity && <Button onClick={handleDelete}>Apagar</Button>}
         <Button onClick={handleSave}>Salvar</Button>
       </DialogActions>
+      <Snackbar open={open} autoHideDuration={2500} onClose={handleCloseAlert}>
+        <Alert
+          onClose={handleCloseAlert}
+          severity={err ? 'error' : 'success'}
+          sx={{ width: '100%' }}
+        >
+          {err?.toString() || 'Dados salvos com sucesso!'}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

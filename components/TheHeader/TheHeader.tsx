@@ -1,6 +1,7 @@
 'use client';
 
 import { useContext, useEffect, useRef, useState } from 'react';
+import dayjs from 'dayjs';
 import {
   Alert,
   AppBar,
@@ -10,23 +11,25 @@ import {
   Typography,
 } from '@mui/material';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-
+import { useRouter } from 'next/navigation';
 import PdfDocument from '@/components/PdfDocument';
-
-import { IUser } from '@/interfaces/user.model';
-import {
-  IActivity,
-  IActivityLocalStorage,
-} from '@/interfaces/activities.model';
+import signOut from '@/firebase/auth/signout';
+import { addActivities, addUser } from '@/firebase/firestore/addData';
 import { MainContext } from '@/contexts/MainContext';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { IUser } from '@/interfaces/user.model';
+import { IActivity, IActivityStringify } from '@/interfaces/activities.model';
 
 import * as S from './styles';
-import dayjs from 'dayjs';
-import signOut from '@/firebase/auth/signout';
-import { useRouter } from 'next/navigation';
 
 const TheHeader = () => {
-  const { updateActivities, updateUser } = useContext(MainContext);
+  const {
+    activities: activitiesContext,
+    updateActivities,
+    user: userContext,
+    updateUser,
+  } = useContext(MainContext);
+  const { user: firebaseUser } = useAuthContext();
   const [internshipInfo, setInternshipInfo] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
@@ -36,13 +39,18 @@ const TheHeader = () => {
   const router = useRouter();
 
   useEffect(() => {
-    setInternshipInfo(localStorage?.getItem('internshipInfo') || '');
     setIsClient(true);
     handleResize();
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    setInternshipInfo(
+      JSON.stringify({ user: userContext, activities: activitiesContext }) || ''
+    );
+  }, [userContext, activitiesContext]);
 
   function handleResize() {
     if (window.innerWidth < 720) {
@@ -60,15 +68,16 @@ const TheHeader = () => {
 
   function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const fileReader = new FileReader();
+    setErr(undefined);
 
     fileReader.readAsText(e?.target?.files?.[0] || new Blob([]), 'UTF-8');
-    fileReader.onload = (e) => {
+    fileReader.onload = async (e) => {
       const { user, activities } = JSON.parse(
         (e?.target?.result as string | null) || '{}'
-      ) as { user: IUser; activities: IActivityLocalStorage[] };
+      ) as { user: IUser; activities: IActivityStringify[] };
 
-      const newActivities: IActivity[] = activities.map(
-        (activity: IActivityLocalStorage): IActivity => {
+      const newActivities: IActivity[] = activities?.map(
+        (activity: IActivityStringify): IActivity => {
           return {
             date: activity.date ? dayjs(activity.date) : null,
             hourBegin1: activity.hourBegin1 ? dayjs(activity.hourBegin1) : null,
@@ -80,14 +89,37 @@ const TheHeader = () => {
         }
       );
 
-      updateUser({
+      const userFormated = {
         ...user,
-        internshipBegin: user.internshipBegin
+        internshipBegin: user?.internshipBegin
           ? dayjs(user.internshipBegin)
           : null,
-        internshipEnd: user.internshipEnd ? dayjs(user.internshipEnd) : null,
-      });
+        internshipEnd: user?.internshipEnd ? dayjs(user.internshipEnd) : null,
+      };
+
+      updateUser(userFormated || null);
+
+      const { error } = await addUser(
+        (firebaseUser as { uid: string })?.uid || '',
+        userFormated
+      );
+
+      if (error) {
+        setErr(error as Error);
+      }
+
       updateActivities(newActivities);
+
+      const { error: errorActivities } = await addActivities(
+        (firebaseUser as { uid: string })?.uid || '',
+        { activities: JSON.stringify(newActivities) || '[]' }
+      );
+
+      if (errorActivities) {
+        setErr(errorActivities as Error);
+      }
+
+      setOpen(true);
     };
   }
 
@@ -181,8 +213,12 @@ const TheHeader = () => {
         </Button>
       </Toolbar>
       <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-          {err?.toString()}
+        <Alert
+          onClose={handleClose}
+          severity={err ? 'error' : 'success'}
+          sx={{ width: '100%' }}
+        >
+          {err?.toString() || 'Dados salvos com sucesso!'}
         </Alert>
       </Snackbar>
     </AppBar>
